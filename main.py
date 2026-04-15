@@ -1,5 +1,39 @@
 #!/usr/bin/env python3
 """Mini project CLI: cafe menu and basket management"""
+
+#######basket ammar and jacob
+def print_basket_menu():
+    print("\nBasket Options")
+    print("1 - View Basket")
+    print("2 - Remove Item from Basket")
+    print("3 - Clear Basket")
+    print("0 - Back to main menu")
+
+def handle_basket_menu(basket):
+    while True:
+        print_basket_menu()
+        choice = get_choice("Select main option", {"0", "1", "2", "3"})
+
+        if choice == "0":
+            break
+ 
+        elif choice == "1":
+            display_items(basket, "Items in your basket")
+ 
+        elif choice == "2":
+            if not basket:
+                print("Your basket is empty")
+                continue
+            display_items(basket, "Select item to remove")
+            idx = get_numeric_choice("Enter collerating index to remove", 0, len(basket) -1)  
+            removed = basket.pop(idx)
+            print(f"Removed '{removed}' from your basket.")  
+ 
+        elif choice == "3":
+            if confirm("Are you you want to clear the entire basket? (y/n)"):
+                basket.clear()
+                print("Basket Cleared.")
+            
  
 def print_main_menu():
     """Display the main menu options."""
@@ -7,6 +41,7 @@ def print_main_menu():
     print("1 - Cafe menu")
     print("2 - Add new item to cafe menu")
     print("3 - Edit cafe menu")
+    print("4 - View/Manage Basket")
     print("0 - Exit")
  
  
@@ -160,7 +195,7 @@ def main():
  
     while True:
         print_main_menu()
-        choice = get_choice("Select main option", {"0", "1", "2", "3"})
+        choice = get_choice("Select main option", {"0", "1", "2", "3", "4"})
  
         if choice == "0":
             print("Goodbye.")
@@ -174,9 +209,15 @@ def main():
  
         elif choice == "3":
             handle_edit_menu(cafe_items)
+        
+        elif choice == "4":
+            handle_basket_menu(basket)
  
  
  
 if __name__ == "__main__":
     main()
  
+
+
+
