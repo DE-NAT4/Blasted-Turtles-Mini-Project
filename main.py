@@ -188,7 +188,11 @@ def handle_edit_menu(cafe_items):
         else:
             print("Invalid edit menu choice.")
  
- 
+################# ORDER FUNCTIONS #################
+
+
+
+################# MAIN APPLICATION LOOP #################
 def main():
     """Main application loop."""
     cafe_items = ["Coffee", "Tea", "Latte", "Cappuccino", "Sandwich", "Cake", "Muffin", "Bagel"]
