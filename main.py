@@ -189,7 +189,24 @@ def handle_edit_menu(cafe_items):
             print("Invalid edit menu choice.")
  
 ################# ORDER FUNCTIONS #################
+# List to store all orders
+orders = []
 
+# Create a new order by getting customer information from user input
+# Inputs: None (gets input from user)
+# Output: dict - the created order dictionary
+def create_order():
+    name = input("Enter your name: ")
+    address = input("Enter your address: ")
+    phone = input("Enter your phone number: ")
+    order = {
+        'name': name,
+        'address': address,
+        'phone': phone,
+        'status': 'pending'
+    }
+    orders.append(order)
+    return order
 
 
 ################# MAIN APPLICATION LOOP #################
