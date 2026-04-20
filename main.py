@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Mini project CLI: cafe menu and basket management"""
 
+import json
+
 #######basket ammar and jacob
 #####just testing a 2nd commit to my branch
 def print_basket_menu():
@@ -43,6 +45,7 @@ def print_main_menu():
     print("2 - Add new item to cafe menu")
     print("3 - Edit cafe menu")
     print("4 - View/Manage Basket")
+    print("5 - Manage Orders")
     print("0 - Exit")
  
  
@@ -188,7 +191,180 @@ def handle_edit_menu(cafe_items):
         else:
             print("Invalid edit menu choice.")
  
+################# ORDER FUNCTIONS #################
+# List to store all orders
+orders = []
+
+# Create a new order by getting customer information from user input
+# Inputs: None (gets input from user)
+# Output: dict - the created order dictionary
+def create_order():
+    name = input("Enter customer name: ")
+    address = input("Enter customer address: ")
+    phone = input("Enter customer phone: ")
+    order = {
+        'customer_name': name,
+        'customer_address': address,
+        'customer_phone': phone,
+        'status': 'pending'
+    }
+    orders.append(order)
+    save_orders(orders)
+    return order
+
+
+# Helper function to load orders from orders.txt
+# Loads and parses all orders from the file into a list of dictionaries
+# Inputs: None
+# Output: list of order dictionaries
+def load_orders():
+    try:
+        with open('orders.txt', 'r') as f:
+            content = f.read()
+        orders = []
+        # Split by '}\n\n' to get individual order blocks
+        blocks = content.strip().split('}\n\n')
+        for block in blocks:
+            if block.strip():
+                block = block.strip()
+                # Ensure the block ends with '}' for valid JSON
+                if not block.endswith('}'):
+                    block += '}'
+                if block.startswith('{'):
+                    order = json.loads(block)
+                    orders.append(order)
+        return orders
+    except FileNotFoundError:
+        print("orders.txt not found.")
+        return []
+    except json.JSONDecodeError as e:
+        print(f"Error parsing orders.txt: {e}")
+        return []
+
+# Helper function to save orders to orders.txt
+# Writes the list of orders back to the file in JSON format
+# Inputs: orders (list of dictionaries)
+# Output: None
+def save_orders(orders):
+    with open('orders.txt', 'w') as f:
+        for order in orders:
+            json.dump(order, f, indent=4)
+            f.write('\n\n')
+
+# View all orders in orders.txt
+# Displays all orders with their details to the console
+# Inputs: None
+# Output: None (prints to console)
+def view_orders():
+    orders = load_orders()
+    if not orders:
+        print("No orders found.")
+        return
+    for i, order in enumerate(orders, 1):
+        print(f"Order {i}:")
+        print(f"  Name: {order.get('customer_name', 'N/A')}")
+        print(f"  Address: {order.get('customer_address', 'N/A')}")
+        print(f"  Phone: {order.get('customer_phone', 'N/A')}")
+        print(f"  Status: {order.get('status', 'N/A')}")
+        print()
+
+# Edit an order by index (1-based)
+# Allows the user to modify specific fields of an order interactively
+# Inputs: index (int, 1-based order number)
+# Output: None (modifies file and prints status)
+def edit_order(index):
+    orders = load_orders()
+    if index < 1 or index > len(orders):
+        print("Invalid order index.")
+        return
+    order = orders[index - 1]
+    print("Current order:")
+    print(f"  Name: {order.get('customer_name', 'N/A')}")
+    print(f"  Address: {order.get('customer_address', 'N/A')}")
+    print(f"  Phone: {order.get('customer_phone', 'N/A')}")
+    print(f"  Status: {order.get('status', 'N/A')}")
+    print()
+    # Define available fields for editing
+    fields = {
+        '1': ('customer_name', 'Name'),
+        '2': ('customer_address', 'Address'),
+        '3': ('customer_phone', 'Phone'),
+        '4': ('status', 'Status')
+    }
+    # Loop to allow multiple edits until user chooses to stop
+    while True:
+        print("Which field do you want to change?")
+        for k, v in fields.items():
+            print(f"{k} - {v[1]}")
+        print("0 - Done editing")
+        choice = get_choice("Enter choice", {"0", "1", "2", "3", "4"})
+        if choice == '0':
+            break
+        elif choice in fields:
+            key, label = fields[choice]
+            new_value = input(f"Enter new {label.lower()}: ").strip()
+            if new_value:
+                order[key] = new_value
+                print(f"{label} updated.")
+            else:
+                print("No change made.")
+        else:
+            # This shouldn't happen since get_choice validates
+            print("Invalid choice.")
+    save_orders(orders)
+    print("Order updated.")
+
+# Delete an order by index (1-based)
+# Removes the specified order from the file
+# Inputs: index (int, 1-based order number)
+# Output: None (modifies file and prints confirmation)
+def delete_order(index):
+    orders = load_orders()
+    if index < 1 or index > len(orders):
+        print("Invalid order index.")
+        return
+    del orders[index - 1]
+    save_orders(orders)
+    print("Order deleted.")
+
+def handle_orders():
+    while True:
+        print("\nORDER MANAGEMENT")
+        print("1 - Create Order")
+        print("2 - View Orders")
+        print("3 - Edit Order")
+        print("4 - Delete Order")
+        print("0 - Back to main menu")
+        choice = get_choice("Select option", {"0", "1", "2", "3", "4"})
+        if choice == "0":
+            break
+        elif choice == "1":
+            create_order()
+            print("Order created.")
+        elif choice == "2":
+            view_orders()
+        elif choice == "3":
+            orders_list = load_orders()
+            if not orders_list:
+                print("No orders to edit.")
+                continue
+            view_orders()
+            idx = get_numeric_choice("Enter order number to edit", 1, len(orders_list))
+            edit_order(idx)
+        elif choice == "4":
+            orders_list = load_orders()
+            if not orders_list:
+                print("No orders to delete.")
+                continue
+            view_orders()
+            idx = get_numeric_choice("Enter order number to delete", 1, len(orders_list))
+            delete_order(idx)
  
+
+
+
+
+################# MAIN APPLICATION LOOP #################
 def main():
     """Main application loop."""
     cafe_items = ["Coffee", "Tea", "Latte", "Cappuccino", "Sandwich", "Cake", "Muffin", "Bagel"]
@@ -196,7 +372,7 @@ def main():
  
     while True:
         print_main_menu()
-        choice = get_choice("Select main option", {"0", "1", "2", "3", "4"})
+        choice = get_choice("Select main option", {"0", "1", "2", "3", "4", "5"})
  
         if choice == "0":
             print("Goodbye.")
@@ -214,11 +390,12 @@ def main():
         elif choice == "4":
             handle_basket_menu(basket)
  
+        elif choice == "5":
+            handle_orders()
+ 
  
  
 if __name__ == "__main__":
     main()
- 
-
 
 
