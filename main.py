@@ -5,6 +5,12 @@ import json
 
 #######basket ammar and jacob
 #####just testing a 2nd commit to my branch
+########### MAIN APPKICATION LOOP ############
+
+class CafeApp:
+    def __init__(self):
+        pass
+
 
 ############### MENU #################
 class Menu:
