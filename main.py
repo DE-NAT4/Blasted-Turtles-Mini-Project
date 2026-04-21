@@ -14,6 +14,12 @@ class Menu:
     def __init__(self, title, options):
         self.title = title
         self.options = options
+    
+    def display(self):
+        print(f"\n{self.title}")
+        for idx, option in enumerate(self.options, 1):
+            print(f"{idx} - {option}")
+        print("0 - Back to main menu")
         
 def print_basket_menu():
     print("\nBasket Options")
