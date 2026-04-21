@@ -5,7 +5,7 @@ import json
 
 #######basket ammar and jacob
 #####just testing a 2nd commit to my branch
-########### MAIN APPKICATION LOOP ############
+########### MAIN APPLICATION ############
 
 class CafeApp:
     #Initializes the CafeApp with empty lists for products, couriers, and orders
@@ -13,7 +13,18 @@ class CafeApp:
         self.products = []
         self.couriers = []
         self.orders = []
-
+    
+    #Loads products from a JSON file and stores them in the products list
+    #filename: string - the name of the JSON file to load products from
+    def load_products_from_file(self, filename):
+        try:
+            with open(filename, 'r') as f:
+                self.products = json.load(f)
+        except FileNotFoundError:
+            print(f"{filename} not found. Starting with an empty product list.")
+            self.products = []
+        
+        
 
 ############### MENU #################
 class Menu:
