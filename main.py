@@ -5,6 +5,16 @@ import json
 
 #######basket ammar and jacob
 #####just testing a 2nd commit to my branch
+
+############### MENU #################
+class Menu:
+    #Constructs mennu object
+    #title: string - the title of the menu
+    #options: list of strings - the menu options to display
+    def __init__(self, title, options):
+        self.title = title
+        self.options = options
+        
 def print_basket_menu():
     print("\nBasket Options")
     print("1 - View Basket")
