@@ -20,6 +20,14 @@ class Menu:
         for idx, option in enumerate(self.options, 1):
             print(f"{idx} - {option}")
         print("0 - Back to main menu")
+    
+    def get_choice(self):
+        valid_options = {str(i) for i in range(len(self.options) + 1)}
+        while True:
+            choice = input(f"Select option (0-{len(self.options)}): ").strip()
+            if choice in valid_options:
+                return choice
+            print(f"Invalid choice. Please enter a number between 0 and {len(self.options)}.")
         
 def print_basket_menu():
     print("\nBasket Options")
