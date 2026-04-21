@@ -8,8 +8,11 @@ import json
 ########### MAIN APPKICATION LOOP ############
 
 class CafeApp:
+    #Initializes the CafeApp with empty lists for products, couriers, and orders
     def __init__(self):
-        pass
+        self.products = []
+        self.couriers = []
+        self.orders = []
 
 
 ############### MENU #################
