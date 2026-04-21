@@ -28,6 +28,15 @@ class Menu:
             if choice in valid_options:
                 return choice
             print(f"Invalid choice. Please enter a number between 0 and {len(self.options)}.")
+    
+    def handle(self):
+        while True:
+            self.display()
+            choice = self.get_choice()
+            if choice == "0":
+                break
+            else:
+                print(f"You selected: {self.options[int(choice) - 1]}")
         
 def print_basket_menu():
     print("\nBasket Options")
