@@ -15,12 +15,16 @@ class Menu:
         self.title = title
         self.options = options
     
+    #Displays the menu title and options to the console
+    #No inputs, no outputs (prints to console)
     def display(self):
         print(f"\n{self.title}")
         for idx, option in enumerate(self.options, 1):
             print(f"{idx} - {option}")
         print("0 - Back to main menu")
     
+    #Prompts the user to select a menu option and validates the input
+    #No inputs, returns the user's choice as a string
     def get_choice(self):
         valid_options = {str(i) for i in range(len(self.options) + 1)}
         while True:
@@ -29,6 +33,8 @@ class Menu:
                 return choice
             print(f"Invalid choice. Please enter a number between 0 and {len(self.options)}.")
     
+    #Handles the menu loop: displays the menu, gets user choice, and processes it
+    #No inputs, no outputs (prints to console)
     def handle(self):
         while True:
             self.display()
