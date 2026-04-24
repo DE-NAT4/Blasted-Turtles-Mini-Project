@@ -8,6 +8,8 @@ import utils
 ########### MAIN APPLICATION ############
 
 class CafeApp:
+
+   
     #Initializes the CafeApp with empty lists for products, couriers, and orders
     def __init__(self):
         self.products = []
@@ -24,32 +26,23 @@ class CafeApp:
     
     def run(self):
         menus_data = utils.load_data('Menus.json')
-        self.menus = {name: Menu(menu_dict, name=name) for name, menu_dict in menus_data.items()}
-        self.main_menu = self.menus.get("MainMenu")
-        self.product_menu = self.menus.get("ProductMenu")
-        self.basket_menu = self.menus.get("BasketMenu")
-        self.product_edit_menu = self.menus.get("ProductEditMenu")
-        self.order_management_menu = self.menus.get("OrderManagementMenu")
-        self.order_edit_menu = self.menus.get("OrderEditMenu")
+        self.menus = {name_id: Menu(menu_dict, name=name_id) for name_id, menu_dict in menus_data.items()}
+        # print(self.menus['MainMenu'].title)
+        self.main_menu = MainMenu(self.menus['MainMenu'].menu_dict, name=self.menus['MainMenu'].title) 
+        print(type(self.main_menu))
+        print(self.main_menu)
+        # self.product_menu = self.menus.get("ProductMenu")
+        # self.basket_menu = self.menus.get("BasketMenu")
+        # self.product_edit_menu = self.menus.get("ProductEditMenu")
+        # self.order_management_menu = self.menus.get("OrderManagementMenu")
+        # self.order_edit_menu = self.menus.get("OrderEditMenu")
 
+        # self.main_menu.handle()
+        # self.main_menu.handle_options(self.main_menu.handle())
 
         #while True:
            
-        choice = self.main_menu.handle()
-        print(f"Main menu choice: {choice}")
-        if choice == "0":
-            print("Goodbye.")
-            #1break
-        elif choice == "1":
-            self.product_menu.handle()
-        elif choice == "2":
-            self.basket_menu.handle()
-        elif choice == "3":
-            self.product_edit_menu.handle()
-        elif choice == "4":
-            self.order_management_menu.handle()
-        elif choice == "5":
-            self.order_edit_menu.handle()
+   
      
 
 
@@ -59,6 +52,13 @@ class Menu:
         self.name = name
         self.menu_dict = menu_dict or {}
         self.title = self.menu_dict.get("title", "Menu")
+
+    def __str__(self):
+        result = "" 
+        for key, value in self.menu_dict.items():
+            result += f"Menu Key: {key} | Menu Value: {value}\n"
+        
+        return result.strip() # .strip() removes the very last extra newline
 
     def display(self):
         print(f"\n{self.title}")
@@ -82,7 +82,28 @@ class Menu:
             return choice
 
 
+class MainMenu(Menu):
 
+
+    
+    def handle(self):
+        print(self.title)
+        self.display()
+        choice = self.get_choice()
+        # print(f"Main menu choice: {choice}")
+        # if choice == "0":
+        #     print("Goodbye.")
+        #     #1break
+        # elif choice == "1":
+        #     self.product_menu.handle()
+        # elif choice == "2":
+        #     self.basket_menu.handle()
+        # elif choice == "3":
+        #     self.product_edit_menu.handle()
+        # elif choice == "4":
+        #     self.order_management_menu.handle()
+        # elif choice == "5":
+        #     self.order_edit_menu.handle()
 # def handle_basket_menu(basket):
 #     while True:
 #         print_basket_menu()
