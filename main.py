@@ -3,8 +3,7 @@
 
 import json
 import utils
-#######basket ammar and jacob
-#####just testing a 2nd commit to my branch
+
 ########### MAIN APPLICATION ############
 
 class CafeApp:
@@ -26,22 +25,25 @@ class CafeApp:
     
     def run(self):
         menus_data = utils.load_data('Menus.json')
-        self.menus = {name_id: Menu(menu_dict, name=name_id) for name_id, menu_dict in menus_data.items()}
-        # print(self.menus['MainMenu'].title)
-        self.main_menu = MainMenu(self.menus['MainMenu'].menu_dict, name=self.menus['MainMenu'].title) 
-        print(type(self.main_menu))
-        print(self.main_menu)
-        # self.product_menu = self.menus.get("ProductMenu")
-        # self.basket_menu = self.menus.get("BasketMenu")
-        # self.product_edit_menu = self.menus.get("ProductEditMenu")
-        # self.order_management_menu = self.menus.get("OrderManagementMenu")
-        # self.order_edit_menu = self.menus.get("OrderEditMenu")
+        # menus_names = menus_data.keys()
+        # for name in menus_names:
+        #     print(f"Menu name: {name}")
 
-        # self.main_menu.handle()
-        # self.main_menu.handle_options(self.main_menu.handle())
+        # Default to a standard Menu if the key isn't in the mapping
+        for name_id, menu_dict in menus_data.items():
+            self.menus[name_id] = Menu(menu_dict, name=menu_dict.get('title', name_id)) 
+    
 
-        #while True:
-           
+
+        #Define Child Menus
+        self.main_menu = MainMenu(self.menus['MainMenu'].menu_dict, name=self.menus['MainMenu'].name) 
+        self.product_menu = ProductMenu(self.menus['ProductMenu'].menu_dict, name=self.menus['ProductMenu'].name)
+        self.basket_menu = BasketMenu(self.menus['BasketMenu'].menu_dict, name=self.menus['BasketMenu'].name)
+        self.product_edit_menu = ProductEditMenu(self.menus['ProductEditMenu'].menu_dict, name=self.menus['ProductEditMenu'].name)
+        self.order_management_menu = OrderManagementMenu(self.menus['OrderManagementMenu'].menu_dict, name=self.menus['OrderManagementMenu'].name)
+        self.order_edit_menu = OrderEditMenu(self.menus['OrderEditMenu'].menu_dict, name=self.menus['OrderEditMenu'].name)
+
+        self.main_menu.handle() # Start the main menu loop
    
      
 
@@ -62,8 +64,11 @@ class Menu:
 
     def display(self):
         print(f"\n{self.title}")
-        for key in sorted((k for k in self.menu_dict.keys() if k != "title"), key=int):
-            print(f"{key} - {self.menu_dict[key]}")
+        for key in self.menu_dict.keys():
+            if key != "title":
+                print(f"{key} - {self.menu_dict[key]}")
+            else:
+                continue
     
     def get_choice(self):
         valid_options = {k for k in self.menu_dict.keys() if k != "title"}
@@ -72,12 +77,17 @@ class Menu:
             if choice in valid_options:
                 return choice
             print(f"Invalid choice. Enter one of: {', '.join(sorted(valid_options, key=int))}")
+            self.display()  # Re-display menu after invalid choice
     
-    def handle(self):
+    def handle(self, name=None):
         while True:
             self.display()
             choice = self.get_choice()
-            if choice == "0":
+            if choice == '0' and name == "MainMenu":
+                print("Goodbye.")
+                break
+            elif choice == "0":
+                print("Going back to previous menu.")
                 break
             return choice
 
@@ -104,6 +114,41 @@ class MainMenu(Menu):
         #     self.order_management_menu.handle()
         # elif choice == "5":
         #     self.order_edit_menu.handle()
+
+class ProductMenu(Menu):
+    pass
+# def display_items(items, title):
+#     """Display a list of items with indices."""
+#     print(f"\n{title}:")
+#     if not items:
+#         print("(none)")
+#     else:
+#         for idx, item in enumerate(items):
+#             print(f"{idx}: {item}")
+
+# def handle_cafe_menu(cafe_items, basket):
+#     """Handle the cafe menu for ordering."""
+#     while True:
+#         print_cafe_menu(cafe_items)
+#         if not cafe_items:
+#             choice = get_choice("No items to select, enter 0 to return", {"0"})
+#             if choice == "0":
+#                 break
+#             continue
+ 
+#         selected = get_numeric_choice("Select item number to add to basket", 0, len(cafe_items))
+#         if selected == 0:
+#             break
+ 
+#         item = cafe_items[selected - 1]
+#         if confirm(f"Add '{item}' to basket? (y/n)"):
+#             basket.append(item)
+#             print(f"'{item}' added to basket.")
+#         else:
+#             print("Not added.")
+class BasketMenu(Menu):
+    pass
+
 # def handle_basket_menu(basket):
 #     while True:
 #         print_basket_menu()
@@ -128,76 +173,8 @@ class MainMenu(Menu):
 #             if confirm("Are you you want to clear the entire basket? (y/n)"):
 #                 basket.clear()
 #                 print("Basket Cleared.")
-            
- 
-
- 
- 
-# def get_valid_index(items, prompt):
-#     """Prompt for a valid index within the items list."""
-#     while True:
-#         idx_input = input(f"{prompt} (0-{len(items)-1}): ").strip()
-#         if not idx_input.isdigit():
-#             print("Invalid input. Please enter a number.")
-#             continue
-#         idx = int(idx_input)
-#         if idx < 0 or idx >= len(items):
-#             print("Index out of range.")
-#             continue
-#         return idx
- 
- 
-# def confirm(prompt):
-#     """Ask user to confirm yes/no."""
-#     return get_choice(prompt, {"y", "n"}) == "y"
- 
- 
-# def get_numeric_choice(prompt, minimum, maximum):
-#     """Prompt for numeric choice inside range."""
-#     while True:
-#         value = input(f"{prompt} ({minimum}-{maximum}): ").strip()
-#         if not value.isdigit():
-#             print("Invalid input. Please enter a number.")
-#             continue
-#         num = int(value)
-#         if num < minimum or num > maximum:
-#             print("Number out of range.")
-#             continue
-#         return num
- 
- 
-# def display_items(items, title):
-#     """Display a list of items with indices."""
-#     print(f"\n{title}:")
-#     if not items:
-#         print("(none)")
-#     else:
-#         for idx, item in enumerate(items):
-#             print(f"{idx}: {item}")
- 
- 
-# def handle_cafe_menu(cafe_items, basket):
-#     """Handle the cafe menu for ordering."""
-#     while True:
-#         print_cafe_menu(cafe_items)
-#         if not cafe_items:
-#             choice = get_choice("No items to select, enter 0 to return", {"0"})
-#             if choice == "0":
-#                 break
-#             continue
- 
-#         selected = get_numeric_choice("Select item number to add to basket", 0, len(cafe_items))
-#         if selected == 0:
-#             break
- 
-#         item = cafe_items[selected - 1]
-#         if confirm(f"Add '{item}' to basket? (y/n)"):
-#             basket.append(item)
-#             print(f"'{item}' added to basket.")
-#         else:
-#             print("Not added.")
- 
- 
+class ProductEditMenu(Menu):
+    pass
 # def handle_add_item(cafe_items):
 #     """Handle adding a new unique item to the cafe menu."""
 #     new_item = input("Enter new cafe item name: ").strip()
@@ -245,6 +222,153 @@ class MainMenu(Menu):
  
 #         else:
 #             print("Invalid edit menu choice.")
+class OrderManagementMenu(Menu):
+    pass
+
+# # View all orders in orders.txt
+# # Displays all orders with their details to the console
+# # Inputs: None
+# # Output: None (prints to console)
+# def view_orders():
+#     orders = load_orders()
+#     if not orders:
+#         print("No orders found.")
+#         return
+#     for i, order in enumerate(orders, 1):
+#         print(f"Order {i}:")
+#         print(f"  Name: {order.get('customer_name', 'N/A')}")
+#         print(f"  Address: {order.get('customer_address', 'N/A')}")
+#         print(f"  Phone: {order.get('customer_phone', 'N/A')}")
+#         print(f"  Status: {order.get('status', 'N/A')}")
+#         print()
+
+# def handle_orders():
+#     while True:
+#         print("\nORDER MANAGEMENT")
+#         print("1 - Create Order")
+#         print("2 - View Orders")
+#         print("3 - Edit Order")
+#         print("4 - Delete Order")
+#         print("0 - Back to main menu")
+#         choice = get_choice("Select option", {"0", "1", "2", "3", "4"})
+#         if choice == "0":
+#             break
+#         elif choice == "1":
+#             create_order()
+#             print("Order created.")
+#         elif choice == "2":
+#             view_orders()
+#         elif choice == "3":
+#             orders_list = load_orders()
+#             if not orders_list:
+#                 print("No orders to edit.")
+#                 continue
+#             view_orders()
+#             idx = get_numeric_choice("Enter order number to edit", 1, len(orders_list))
+#             edit_order(idx)
+#         elif choice == "4":
+#             orders_list = load_orders()
+#             if not orders_list:
+#                 print("No orders to delete.")
+#                 continue
+#             view_orders()
+#             idx = get_numeric_choice("Enter order number to delete", 1, len(orders_list))
+#             delete_order(idx)
+ 
+class OrderEditMenu(Menu):
+    pass
+
+# Edit an order by index (1-based)
+# # Allows the user to modify specific fields of an order interactively
+# # Inputs: index (int, 1-based order number)
+# # Output: None (modifies file and prints status)
+# def edit_order(index):
+#     orders = load_orders()
+#     if index < 1 or index > len(orders):
+#         print("Invalid order index.")
+#         return
+#     order = orders[index - 1]
+#     print("Current order:")
+#     print(f"  Name: {order.get('customer_name', 'N/A')}")
+#     print(f"  Address: {order.get('customer_address', 'N/A')}")
+#     print(f"  Phone: {order.get('customer_phone', 'N/A')}")
+#     print(f"  Status: {order.get('status', 'N/A')}")
+#     print()
+#     # Define available fields for editing
+#     fields = {
+#         '1': ('customer_name', 'Name'),
+#         '2': ('customer_address', 'Address'),
+#         '3': ('customer_phone', 'Phone'),
+#         '4': ('status', 'Status')
+#     }
+#     # Loop to allow multiple edits until user chooses to stop
+#     while True:
+#         print("Which field do you want to change?")
+#         for k, v in fields.items():
+#             print(f"{k} - {v[1]}")
+#         print("0 - Done editing")
+#         choice = get_choice("Enter choice", {"0", "1", "2", "3", "4"})
+#         if choice == '0':
+#             break
+#         elif choice in fields:
+#             key, label = fields[choice]
+#             new_value = input(f"Enter new {label.lower()}: ").strip()
+#             if new_value:
+#                 order[key] = new_value
+#                 print(f"{label} updated.")
+#             else:
+#                 print("No change made.")
+#         else:
+#             # This shouldn't happen since get_choice validates
+#             print("Invalid choice.")
+#     save_orders(orders)
+#     print("Order updated.")
+
+            
+ 
+
+ 
+ 
+# def get_valid_index(items, prompt):
+#     """Prompt for a valid index within the items list."""
+#     while True:
+#         idx_input = input(f"{prompt} (0-{len(items)-1}): ").strip()
+#         if not idx_input.isdigit():
+#             print("Invalid input. Please enter a number.")
+#             continue
+#         idx = int(idx_input)
+#         if idx < 0 or idx >= len(items):
+#             print("Index out of range.")
+#             continue
+#         return idx
+ 
+ 
+# def confirm(prompt):
+#     """Ask user to confirm yes/no."""
+#     return get_choice(prompt, {"y", "n"}) == "y"
+ 
+ 
+# def get_numeric_choice(prompt, minimum, maximum):
+#     """Prompt for numeric choice inside range."""
+#     while True:
+#         value = input(f"{prompt} ({minimum}-{maximum}): ").strip()
+#         if not value.isdigit():
+#             print("Invalid input. Please enter a number.")
+#             continue
+#         num = int(value)
+#         if num < minimum or num > maximum:
+#             print("Number out of range.")
+#             continue
+#         return num
+ 
+ 
+
+ 
+ 
+
+ 
+ 
+
  
 # ################# ORDER FUNCTIONS #################
 # # List to store all orders
@@ -306,68 +430,9 @@ class MainMenu(Menu):
 #             json.dump(order, f, indent=4)
 #             f.write('\n\n')
 
-# # View all orders in orders.txt
-# # Displays all orders with their details to the console
-# # Inputs: None
-# # Output: None (prints to console)
-# def view_orders():
-#     orders = load_orders()
-#     if not orders:
-#         print("No orders found.")
-#         return
-#     for i, order in enumerate(orders, 1):
-#         print(f"Order {i}:")
-#         print(f"  Name: {order.get('customer_name', 'N/A')}")
-#         print(f"  Address: {order.get('customer_address', 'N/A')}")
-#         print(f"  Phone: {order.get('customer_phone', 'N/A')}")
-#         print(f"  Status: {order.get('status', 'N/A')}")
-#         print()
 
-# # Edit an order by index (1-based)
-# # Allows the user to modify specific fields of an order interactively
-# # Inputs: index (int, 1-based order number)
-# # Output: None (modifies file and prints status)
-# def edit_order(index):
-#     orders = load_orders()
-#     if index < 1 or index > len(orders):
-#         print("Invalid order index.")
-#         return
-#     order = orders[index - 1]
-#     print("Current order:")
-#     print(f"  Name: {order.get('customer_name', 'N/A')}")
-#     print(f"  Address: {order.get('customer_address', 'N/A')}")
-#     print(f"  Phone: {order.get('customer_phone', 'N/A')}")
-#     print(f"  Status: {order.get('status', 'N/A')}")
-#     print()
-#     # Define available fields for editing
-#     fields = {
-#         '1': ('customer_name', 'Name'),
-#         '2': ('customer_address', 'Address'),
-#         '3': ('customer_phone', 'Phone'),
-#         '4': ('status', 'Status')
-#     }
-#     # Loop to allow multiple edits until user chooses to stop
-#     while True:
-#         print("Which field do you want to change?")
-#         for k, v in fields.items():
-#             print(f"{k} - {v[1]}")
-#         print("0 - Done editing")
-#         choice = get_choice("Enter choice", {"0", "1", "2", "3", "4"})
-#         if choice == '0':
-#             break
-#         elif choice in fields:
-#             key, label = fields[choice]
-#             new_value = input(f"Enter new {label.lower()}: ").strip()
-#             if new_value:
-#                 order[key] = new_value
-#                 print(f"{label} updated.")
-#             else:
-#                 print("No change made.")
-#         else:
-#             # This shouldn't happen since get_choice validates
-#             print("Invalid choice.")
-#     save_orders(orders)
-#     print("Order updated.")
+
+# 
 
 # # Delete an order by index (1-based)
 # # Removes the specified order from the file
@@ -382,39 +447,7 @@ class MainMenu(Menu):
 #     save_orders(orders)
 #     print("Order deleted.")
 
-# def handle_orders():
-#     while True:
-#         print("\nORDER MANAGEMENT")
-#         print("1 - Create Order")
-#         print("2 - View Orders")
-#         print("3 - Edit Order")
-#         print("4 - Delete Order")
-#         print("0 - Back to main menu")
-#         choice = get_choice("Select option", {"0", "1", "2", "3", "4"})
-#         if choice == "0":
-#             break
-#         elif choice == "1":
-#             create_order()
-#             print("Order created.")
-#         elif choice == "2":
-#             view_orders()
-#         elif choice == "3":
-#             orders_list = load_orders()
-#             if not orders_list:
-#                 print("No orders to edit.")
-#                 continue
-#             view_orders()
-#             idx = get_numeric_choice("Enter order number to edit", 1, len(orders_list))
-#             edit_order(idx)
-#         elif choice == "4":
-#             orders_list = load_orders()
-#             if not orders_list:
-#                 print("No orders to delete.")
-#                 continue
-#             view_orders()
-#             idx = get_numeric_choice("Enter order number to delete", 1, len(orders_list))
-#             delete_order(idx)
- 
+
 
 
 
