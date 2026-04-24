@@ -13,43 +13,46 @@ class CafeApp:
         self.products = []
         self.couriers = []
         self.orders = []
-        # self.main_menu = 
+        self.menus = {}
+        self.main_menu = None
+        self.product_menu = None    
+        self.basket_menu = None
+        self.product_edit_menu = None   
+        self.order_management_menu = None
+        self.order_edit_menu = None
+
     
     def run(self):
         menus_data = utils.load_data('Menus.json')
         self.menus = {name: Menu(menu_dict, name=name) for name, menu_dict in menus_data.items()}
-        
-        for menu in self.menus.values():
-            menu.display()
+        self.main_menu = self.menus.get("MainMenu")
+        self.product_menu = self.menus.get("ProductMenu")
+        self.basket_menu = self.menus.get("BasketMenu")
+        self.product_edit_menu = self.menus.get("ProductEditMenu")
+        self.order_management_menu = self.menus.get("OrderManagementMenu")
+        self.order_edit_menu = self.menus.get("OrderEditMenu")
+
+
+        #while True:
+           
+        choice = self.main_menu.handle()
+        print(f"Main menu choice: {choice}")
+        if choice == "0":
+            print("Goodbye.")
+            #1break
+        elif choice == "1":
+            self.product_menu.handle()
+        elif choice == "2":
+            self.basket_menu.handle()
+        elif choice == "3":
+            self.product_edit_menu.handle()
+        elif choice == "4":
+            self.order_management_menu.handle()
+        elif choice == "5":
+            self.order_edit_menu.handle()
      
 
-# def main():
-#     """Main application loop."""
-#     # cafe_items = ["Coffee", "Tea", "Latte", "Cappuccino", "Sandwich", "Cake", "Muffin", "Bagel"]
-#     # basket = []
- 
-#     while True:
-#         print_main_menu()
-#         choice = get_choice("Select main option", {"0", "1", "2", "3", "4", "5"})
- 
-#         if choice == "0":
-#             print("Goodbye.")
-#             break
- 
-#         elif choice == "1":
-#             handle_cafe_menu(cafe_items, basket)
- 
-#         elif choice == "2":
-#             handle_add_item(cafe_items)
- 
-#         elif choice == "3":
-#             handle_edit_menu(cafe_items)
-        
-#         elif choice == "4":
-#             handle_basket_menu(basket)
- 
-#         elif choice == "5":
-#             handle_orders()
+
 ############### MENU #################
 class Menu:
     def __init__(self, menu_dict=None, name=None):
@@ -76,14 +79,9 @@ class Menu:
             choice = self.get_choice()
             if choice == "0":
                 break
-            print(f"You selected: {self.menu_dict[choice]}")
+            return choice
 
-# def print_basket_menu():
-#     print("\nBasket Options")
-#     print("1 - View Basket")
-#     print("2 - Remove Item from Basket")
-#     print("3 - Clear Basket")
-#     print("0 - Back to main menu")
+
 
 # def handle_basket_menu(basket):
 #     while True:
@@ -111,44 +109,7 @@ class Menu:
 #                 print("Basket Cleared.")
             
  
-# def print_main_menu():
-#     """Display the main menu options."""
-#     print("\nMAIN MENU")
-#     print("1 - Cafe menu")
-#     print("2 - Add new item to cafe menu")
-#     print("3 - Edit cafe menu")
-#     print("4 - View/Manage Basket")
-#     print("5 - Manage Orders")
-#     print("0 - Exit")
- 
- 
-# def print_cafe_menu(cafe_items):
-#     """Display the cafe menu with numbered items."""
-#     print("\nCAFE MENU")
-#     if not cafe_items:
-#         print("(no items available)")
-#     else:
-#         for idx, item in enumerate(cafe_items, 1):
-#             print(f"{idx} - {item}")
-#     print("0 - Back to main menu")
- 
- 
-# def print_edit_menu():
-#     """Display the edit menu options."""
-#     print("\nEDIT CAFE MENU")
-#     print("1 - Update item name")
-#     print("2 - Remove item")
-#     print("0 - Back to main menu")
- 
- 
-# def get_choice(prompt, valid_options):
-#     """Prompt until user chooses one of valid options."""
-#     valid_str = ", ".join(sorted(valid_options))
-#     while True:
-#         choice = input(f"{prompt} ({valid_str}): ").strip().lower()
-#         if choice in valid_options:
-#             return choice
-#         print(f"Invalid choice. Choose {valid_str}.")
+
  
  
 # def get_valid_index(items, prompt):
